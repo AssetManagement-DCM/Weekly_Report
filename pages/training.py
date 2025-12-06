@@ -34,6 +34,7 @@ section.main > div { padding-top: 0rem; }
     padding: 14px 40px;
     display: flex;
     gap: 40px;
+    radius: 10px;
     font-size: 15px;
     color: white;
     width: 100%;
@@ -346,3 +347,4 @@ for i in range(0, len(rows), cols_per_row):
                 with col:
 
                     st.error(f"Error load: {e}")
+
