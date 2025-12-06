@@ -23,6 +23,70 @@ st.markdown("""
         }
     </style>
 """, unsafe_allow_html=True)
+
+st.markdown("""
+<style>
+html { scroll-behavior: smooth; }
+section.main > div { padding-top: 0rem; }
+
+.navbar {
+    background-color: #1a1a1a;
+    padding: 14px 40px;
+    display: flex;
+    gap: 40px;
+    font-size: 15px;
+    color: white;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+.nav-item { position: relative; cursor: pointer; }
+.nav-item a { color: white !important; text-decoration: none !important; }
+.nav-item:hover a { opacity: 0.8; }
+.dropdown {
+    display: none;
+    position: absolute;
+    top: 32px;
+    left: 0;
+    background-color: #2b2b2b;
+    padding: 8px 0;
+    border-radius: 8px;
+    min-width: 180px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+    z-index: 1000;
+}
+.nav-item:hover .dropdown { display: block; }
+.dropdown a { padding: 8px 15px; display: block; }
+.dropdown a:hover { background-color: #3c3c3c; display : block}
+</style>
+
+<div class="navbar">
+    <div class="nav-item"><a href="?nav=overview">Overview</a></div>
+    <div class="nav-item">
+        Activity ▼
+        <div class="dropdown">
+            <a href="?nav=induksi">Induksi</a>
+            <a href="?nav=training">Training</a>
+            <a href="?nav=sharing">Sharing Knowledge</a>
+        </div>
+    </div>
+</div>""",unsafe_allow_html=True)
+
+nav = st.query_params.get("nav", None)
+
+if nav == "overview":
+    st.switch_page("home.py")
+
+elif nav == "induksi":
+    st.switch_page("pages/induksi.py")
+
+elif nav == "sharing":
+    st.switch_page("sharing.py")
+
+elif nav == "training":
+    pass
+
 st.header("🏗️ Training Heavy Equipment")
 # ================= AUTH ==================
 SCOPES = [
@@ -280,4 +344,5 @@ for i in range(0, len(rows), cols_per_row):
 
             except Exception as e:
                 with col:
+
                     st.error(f"Error load: {e}")
