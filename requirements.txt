@@ -1,0 +1,5 @@
+streamlit
+pandas
+altair
+streamlit-navigation-bar
+streamlit-option-menu
