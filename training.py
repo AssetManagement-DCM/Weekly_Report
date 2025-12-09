@@ -194,7 +194,6 @@ def app():
                         colors=color_list
                     )
                     ax.axis("equal")
-
                     st.pyplot(fig)
     st.divider()
 
