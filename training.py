@@ -156,7 +156,7 @@ def app():
         pivot.index = pivot.index + 1
         st.dataframe(pivot, height=350)
     with col2:
-        possible_bus = ["DCM", "HPAL", "ONC"]
+        possible_bus = ["DCM", "HPAL", "ONC", "Lainnya"]
 
         available_bus = [bu for bu in possible_bus if bu in pivot.columns]
 
@@ -177,13 +177,11 @@ def app():
                 colors = {
                     "DCM": "#134f5c",
                     "HPAL": "#2f9a7f",
-                    "ONC": "#31681a"
+                    "ONC": "#31681a",
+                    "Lainnya":"#000000"
                 }
                 color_list = [colors[bu] for bu in labels]
 
-                # =====================
-                # PIE CHART
-                # =====================
                 if sum(sizes) == 0:
                     st.info("Data kosong, tidak bisa menampilkan chart.")
                 else:
