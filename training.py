@@ -158,27 +158,46 @@ def app():
     with col2:
         possible_bus = ["DCM", "HPAL", "ONC"]
 
-        # Ambil BU yang kolomnya memang ada di pivot
         available_bus = [bu for bu in possible_bus if bu in pivot.columns]
 
-        # Kalau tidak ada kolom satupun → skip
         if len(available_bus) == 0:
             st.info("Tidak ada data untuk ditampilkan.")
         else:
-            # Hitung total
             bu_totals = {bu: pivot[bu].sum() for bu in available_bus}
 
             labels = list(bu_totals.keys())
             sizes  = list(bu_totals.values())
 
-            # Jika total semua = 0, skip chart
             if sum(sizes) == 0:
                 st.info("Data kosong, tidak bisa menampilkan chart.")
             else:
                 fig1, ax1 = plt.subplots()
-                ax1.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
-                ax1.axis('equal')
-                st.pyplot(fig1)
+
+                # warna custom
+                colors = {
+                    "DCM": "#134f5c",
+                    "HPAL": "#2f9a7f",
+                    "ONC": "#31681a"
+                }
+                color_list = [colors[bu] for bu in labels]
+
+                # =====================
+                # PIE CHART
+                # =====================
+                if sum(sizes) == 0:
+                    st.info("Data kosong, tidak bisa menampilkan chart.")
+                else:
+                    fig, ax = plt.subplots(figsize=(6, 6))
+                    ax.pie(
+                        sizes,
+                        labels=labels,
+                        autopct="%1.1f%%",
+                        startangle=90,
+                        colors=color_list
+                    )
+                    ax.axis("equal")
+
+                    st.pyplot(fig)
     st.divider()
 
     st.subheader("📸 Dokumentasi Kegiatan")
