@@ -5,12 +5,15 @@ from streamlit_navigation_bar import st_navbar
 from datetime import date
 from streamlit.components.v1 import html
 from streamlit_option_menu import option_menu
+import matplotlib
+
 
 st.set_page_config(
     page_title="Dashboard Asset Management",
     page_icon="👷‍♂️",
     layout="wide"
 )
+
 st.markdown("""
     <style>
         section[data-testid="stSidebar"] {display: none;}
@@ -75,83 +78,18 @@ current_week_number = (days_since_week1 // 7) + 1
 
 default_week = f"Week {current_week_number}"
 
-week_filter = st.multiselect("Pilih Week", weeks, default=[default_week],width=250)
-
-st.markdown("""
-<style>
-html { scroll-behavior: smooth; }
-section.main > div { padding-top: 0rem; }
-
-.navbar {
-    background-color: #1a1a1a;
-    padding: 14px 40px;
-    display: flex;
-    gap: 40px;
-    font-size: 15px;
-    color: white;
-    width: 100%;
-    position: sticky;
-    top: 0;
-    z-index: 999;
-}
-.nav-item { position: relative; cursor: pointer; }
-.nav-item a { color: white !important; text-decoration: none !important; }
-.nav-item:hover a { opacity: 0.8; }
-.dropdown {
-    display: none;
-    position: absolute;
-    top: 32px;
-    left: 0;
-    background-color: #2b2b2b;
-    padding: 8px 0;
-    border-radius: 8px;
-    min-width: 180px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.35);
-    z-index: 1000;
-}
-.nav-item:hover .dropdown { display: block; }
-.dropdown a { padding: 8px 15px; display: block; }
-.dropdown a:hover { background-color: #3c3c3c; }
-</style>
-
-<div class="navbar">
-    <div class="nav-item"><a href="?nav=overview">Overview</a></div>
-    <div class="nav-item">
-        Activity ▼
-        <div class="dropdown">
-            <a href="?nav=induksi">Induksi</a>
-            <a href="?nav=training">Training</a>
-            <a href="?nav=sharing">Sharing Knowledge</a>
-        </div>
-    </div>
-</div>""",unsafe_allow_html=True)
-
-nav = st.query_params.get("nav", None)
-
-if nav == "induksi":
-    st.switch_page("pages/induksi.py")
-
-elif nav == "training":
-    st.switch_page("pages/training.py")
-
-elif nav == "sharing":
-    st.switch_page("sharing.py")
-
-elif nav == "overview":
-    pass
-
 tab1, tab2 = st.tabs(["📑 Overview", "👷‍♂️ Activity"])
 
 ##OVERVIEW
 with tab1:
-
-    filtered_df = data[
+    a,b = st.columns([4,1])
+    with a:
+        st.subheader("📊 Weekly Overview")
+    with b:
+        week_filter = st.multiselect("Pilih Week", weeks, default=[default_week],width=250)
+        filtered_df = data[
         data["Week"].isin(week_filter)
     ]
-
-    # METRICS
-    st.subheader("📊 Weekly Overview")
-
     st.markdown("""
         <style>
 
@@ -294,49 +232,52 @@ with tab1:
 
         container2.markdown("</div>", unsafe_allow_html=True)
 with tab2:
-    # selector = option_menu(
-    #     menu_title=None,
-    #     options=[
-    #         "Induksi","Training","Sharing Knowledge","Pembekalan","Refresh",
-    #         "SIMPER","Tes Praktik","Commissioning/Recommissioning","Inspeksi","Observasi"
-    #     ],
-    #     orientation="horizontal",
-    #     styles={
-    #         "container": {
-    #             "padding": "0",
-    #             "background-color": "#e7e7e7",
-    #             "width": "100%",           # agar full width
-    #             "display": "flex",
-    #             "justify-content": "space-between",  # biar merata
-    #         },
-    #         "nav-link": {
-    #             "font-size": "12px",
-    #             "font-weight": "400",
-    #             "padding": "10px 14px",
-    #             "color": "black",
-    #             "text-align": "center",
-    #             "--hover-color": "#dcdcdc",
-    #         },
-    #         "nav-link-selected": {
-    #             "background-color": "black",
-    #             "color": "white",
-    #             "font-weight": "600",
-    #         }
-    #     }
-    # )
-    a,b,c,d= st.columns(4)
-    with a:
-        submenu = st.selectbox(
-            "Pilih Kategori Activity",
-            ["Induksi", "Training", "Sharing Knowledge", "Pembekalan", 
-            "Refresh", "SIMPER", "Tes Praktik", 
-            "Commissioning/Recommissioning", "Inspeksi", "Observasi"],
-            index=0
+    st.markdown("""
+    <style>
+    .st-key-styledradio .stRadio p {
+        font-size: 14px;
+        padding : 5px;
+    }
+    .st-key-styledradio {
+    margin-top: 20px;
+    }
+    .column {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        border: 1px solid #dfdfdf;
+        box-shadow: 0px 3px 8px rgba(0,0,0,0.12);
+        margin-bottom: 10px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    q, w = st.columns([1, 6], border=True)
+    import training
+    import induksi
+    
+    with q:
+        menu = st.radio(
+            "Pilih Activity",
+            ["Induksi", "Training", "Sharing Knowledge","Commissining/Recommissioning", "Inspeksi", "Observasi", "SIMPER", "Tes Praktik", "Refresh", "Pembekalan", "Briefing P5M"],
+            index=0,
+            key="styledradio"
         )
+        st.markdown(
+            """<style>
+        div[class*="stRadio"] > label > div[data-testid="stMarkdownContainer"] > p {
+            font-size: 20px; font-weight: bold;
+        }
+            </style>
+            """, unsafe_allow_html=True)   
 
-        
-    st.write("tab2")
+    with w:
+        if menu == "Induksi":
+            induksi.app()
 
+        elif menu == "Training":
+            training.app()
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 st.divider()
